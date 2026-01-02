@@ -1,0 +1,736 @@
+{
+  "clientName": "FantaBeach Admin API Collection",
+  "collectionName": "FantaBeach Admin APIs",
+  "collectionId": "fantabeach-admin-apis",
+  "version": "1.0.0",
+  "folders": [
+    {
+      "name": "1. Players Management",
+      "id": "players-management"
+    },
+    {
+      "name": "2. Seasons & Competitions",
+      "id": "seasons-competitions"
+    },
+    {
+      "name": "3. Pairs & Matches",
+      "id": "pairs-matches"
+    },
+    {
+      "name": "4. Game Rules",
+      "id": "game-rules"
+    },
+    {
+      "name": "5. User Monitoring",
+      "id": "user-monitoring"
+    },
+    {
+      "name": "6. Price Management",
+      "id": "price-management"
+    },
+    {
+      "name": "7. Monitoring & Errors",
+      "id": "monitoring-errors"
+    },
+    {
+      "name": "8. Private Leagues",
+      "id": "private-leagues"
+    }
+  ],
+  "requests": [
+    {
+      "name": "Create Player",
+      "method": "POST",
+      "url": "{{baseUrl}}/api/admin/players",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"name\": \"John\",\n  \"surname\": \"Doe\",\n  \"gender\": \"male\",\n  \"category\": \"A\",\n  \"initialPrice\": 100.50,\n  \"initialRating\": 75,\n  \"isActive\": true\n}"
+      },
+      "folder": "players-management"
+    },
+    {
+      "name": "Get All Players",
+      "method": "GET",
+      "url": "{{baseUrl}}/api/admin/players?isActive=true&gender=male&category=A",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "folder": "players-management"
+    },
+    {
+      "name": "Get Single Player",
+      "method": "GET",
+      "url": "{{baseUrl}}/api/admin/players/:id",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "folder": "players-management"
+    },
+    {
+      "name": "Update Player",
+      "method": "PUT",
+      "url": "{{baseUrl}}/api/admin/players/:id",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"name\": \"John Updated\",\n  \"currentPrice\": 120.00,\n  \"currentRating\": 80,\n  \"isActive\": true\n}"
+      },
+      "folder": "players-management"
+    },
+    {
+      "name": "Delete Player",
+      "method": "DELETE",
+      "url": "{{baseUrl}}/api/admin/players/:id",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "folder": "players-management"
+    },
+    {
+      "name": "Upload Players CSV",
+      "method": "POST",
+      "url": "{{baseUrl}}/api/admin/players/upload-csv",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "body": {
+        "type": "form-data",
+        "formData": [
+          {
+            "key": "file",
+            "type": "file",
+            "value": ""
+          }
+        ]
+      },
+      "folder": "players-management"
+    },
+    {
+      "name": "Assign Player to Competition",
+      "method": "POST",
+      "url": "{{baseUrl}}/api/admin/players/:playerId/assign-competition",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"competitionId\": \"competition_id_here\"\n}"
+      },
+      "folder": "players-management"
+    },
+    {
+      "name": "Remove Player from Competition",
+      "method": "DELETE",
+      "url": "{{baseUrl}}/api/admin/players/:playerId/competitions/:competitionId",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "folder": "players-management"
+    },
+    {
+      "name": "Create Season",
+      "method": "POST",
+      "url": "{{baseUrl}}/api/admin/seasons",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"name\": \"Italian Championship 2026\",\n  \"year\": 2026,\n  \"isActive\": true\n}"
+      },
+      "folder": "seasons-competitions"
+    },
+    {
+      "name": "Get All Seasons",
+      "method": "GET",
+      "url": "{{baseUrl}}/api/admin/seasons",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "folder": "seasons-competitions"
+    },
+    {
+      "name": "Get Single Season",
+      "method": "GET",
+      "url": "{{baseUrl}}/api/admin/seasons/:id",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "folder": "seasons-competitions"
+    },
+    {
+      "name": "Update Season",
+      "method": "PUT",
+      "url": "{{baseUrl}}/api/admin/seasons/:id",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"name\": \"Italian Championship 2026 Updated\",\n  \"isActive\": false\n}"
+      },
+      "folder": "seasons-competitions"
+    },
+    {
+      "name": "Delete Season",
+      "method": "DELETE",
+      "url": "{{baseUrl}}/api/admin/seasons/:id",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "folder": "seasons-competitions"
+    },
+    {
+      "name": "Create Competition",
+      "method": "POST",
+      "url": "{{baseUrl}}/api/admin/competitions",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"name\": \"Tournament 1\",\n  \"season\": \"season_id_here\",\n  \"startDate\": \"2026-01-01T00:00:00Z\",\n  \"endDate\": \"2026-12-31T23:59:59Z\",\n  \"status\": \"upcoming\",\n  \"weight\": \"Gold\",\n  \"multiplier\": 1.5,\n  \"deadlineForChanges\": \"2026-01-15T00:00:00Z\",\n  \"budget\": 1000,\n  \"totalSquadSize\": 15,\n  \"startersCount\": 10,\n  \"benchCount\": 5,\n  \"genderRules\": \"mixed\",\n  \"maxTopPlayers\": 3,\n  \"perGenderLimits\": {\n    \"male\": 7,\n    \"female\": 8\n  },\n  \"transferRules\": {\n    \"changesAllowed\": 5,\n    \"transferWindowOpen\": \"2026-01-01T00:00:00Z\",\n    \"transferWindowClose\": \"2026-12-31T23:59:59Z\"\n  }\n}"
+      },
+      "folder": "seasons-competitions"
+    },
+    {
+      "name": "Get All Competitions",
+      "method": "GET",
+      "url": "{{baseUrl}}/api/admin/competitions?season=season_id&status=upcoming",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "folder": "seasons-competitions"
+    },
+    {
+      "name": "Get Single Competition",
+      "method": "GET",
+      "url": "{{baseUrl}}/api/admin/competitions/:id",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "folder": "seasons-competitions"
+    },
+    {
+      "name": "Update Competition",
+      "method": "PUT",
+      "url": "{{baseUrl}}/api/admin/competitions/:id",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"status\": \"in_progress\",\n  \"budget\": 1200\n}"
+      },
+      "folder": "seasons-competitions"
+    },
+    {
+      "name": "Delete Competition",
+      "method": "DELETE",
+      "url": "{{baseUrl}}/api/admin/competitions/:id",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "folder": "seasons-competitions"
+    },
+    {
+      "name": "Add Matchweek",
+      "method": "POST",
+      "url": "{{baseUrl}}/api/admin/competitions/:id/matchweeks",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"weekNumber\": 1,\n  \"startDate\": \"2026-01-01T00:00:00Z\",\n  \"endDate\": \"2026-01-07T23:59:59Z\",\n  \"formationDeadline\": \"2026-01-01T12:00:00Z\",\n  \"status\": \"upcoming\"\n}"
+      },
+      "folder": "seasons-competitions"
+    },
+    {
+      "name": "Update Matchweek",
+      "method": "PUT",
+      "url": "{{baseUrl}}/api/admin/competitions/:id/matchweeks/:weekNumber",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"status\": \"in_progress\",\n  \"formationDeadline\": \"2026-01-01T14:00:00Z\"\n}"
+      },
+      "folder": "seasons-competitions"
+    },
+    {
+      "name": "Create Pair",
+      "method": "POST",
+      "url": "{{baseUrl}}/api/admin/pairs",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"player1\": \"player1_id\",\n  \"player2\": \"player2_id\",\n  \"competition\": \"competition_id\",\n  \"matchweek\": 1,\n  \"isActive\": true\n}"
+      },
+      "folder": "pairs-matches"
+    },
+    {
+      "name": "Create Bulk Pairs",
+      "method": "POST",
+      "url": "{{baseUrl}}/api/admin/pairs/bulk",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"competition\": \"competition_id\",\n  \"matchweek\": 1,\n  \"pairs\": [\n    {\n      \"player1\": \"player1_id\",\n      \"player2\": \"player2_id\"\n    },\n    {\n      \"player1\": \"player3_id\",\n      \"player2\": \"player4_id\"\n    }\n  ]\n}"
+      },
+      "folder": "pairs-matches"
+    },
+    {
+      "name": "Get All Pairs",
+      "method": "GET",
+      "url": "{{baseUrl}}/api/admin/pairs?competition=competition_id&matchweek=1&isActive=true",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "folder": "pairs-matches"
+    },
+    {
+      "name": "Get Single Pair",
+      "method": "GET",
+      "url": "{{baseUrl}}/api/admin/pairs/:id",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "folder": "pairs-matches"
+    },
+    {
+      "name": "Update Pair",
+      "method": "PUT",
+      "url": "{{baseUrl}}/api/admin/pairs/:id",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"isActive\": false\n}"
+      },
+      "folder": "pairs-matches"
+    },
+    {
+      "name": "Delete Pair",
+      "method": "DELETE",
+      "url": "{{baseUrl}}/api/admin/pairs/:id",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "folder": "pairs-matches"
+    },
+    {
+      "name": "Create Match",
+      "method": "POST",
+      "url": "{{baseUrl}}/api/admin/matches",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"competition\": \"competition_id\",\n  \"matchweek\": 1,\n  \"pair1\": \"pair1_id\",\n  \"pair2\": \"pair2_id\",\n  \"matchDate\": \"2026-01-01T15:00:00Z\"\n}"
+      },
+      "folder": "pairs-matches"
+    },
+    {
+      "name": "Get All Matches",
+      "method": "GET",
+      "url": "{{baseUrl}}/api/admin/matches?competition=competition_id&matchweek=1&isCompleted=false",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "folder": "pairs-matches"
+    },
+    {
+      "name": "Get Single Match",
+      "method": "GET",
+      "url": "{{baseUrl}}/api/admin/matches/:id",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "folder": "pairs-matches"
+    },
+    {
+      "name": "Update Match Results",
+      "method": "PUT",
+      "url": "{{baseUrl}}/api/admin/matches/:id/results",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"scores\": {\n    \"set1\": {\n      \"pair1Score\": 21,\n      \"pair2Score\": 19\n    },\n    \"set2\": {\n      \"pair1Score\": 18,\n      \"pair2Score\": 21\n    },\n    \"set3\": {\n      \"pair1Score\": 15,\n      \"pair2Score\": 12\n    }\n  },\n  \"winner\": \"pair1_id\"\n}"
+      },
+      "folder": "pairs-matches"
+    },
+    {
+      "name": "Recalculate Match Points",
+      "method": "POST",
+      "url": "{{baseUrl}}/api/admin/matches/:id/recalculate",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "folder": "pairs-matches"
+    },
+    {
+      "name": "Delete Match",
+      "method": "DELETE",
+      "url": "{{baseUrl}}/api/admin/matches/:id",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "folder": "pairs-matches"
+    },
+    {
+      "name": "Get Game Rules",
+      "method": "GET",
+      "url": "{{baseUrl}}/api/admin/game-rules/:competitionId",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "folder": "game-rules"
+    },
+    {
+      "name": "Get All Game Rules",
+      "method": "GET",
+      "url": "{{baseUrl}}/api/admin/game-rules",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "folder": "game-rules"
+    },
+    {
+      "name": "Update Game Rules",
+      "method": "PUT",
+      "url": "{{baseUrl}}/api/admin/game-rules/:competitionId",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"initialBudget\": 1200,\n  \"minPlayers\": 8,\n  \"maxPlayers\": 15,\n  \"maxTopPlayers\": 3,\n  \"perGenderLimits\": {\n    \"male\": 7,\n    \"female\": 8\n  },\n  \"transferRules\": {\n    \"changesAllowed\": 5,\n    \"transferWindowOpen\": \"2026-01-01T00:00:00Z\",\n    \"transferWindowClose\": \"2026-12-31T23:59:59Z\"\n  },\n  \"scoringRules\": {\n    \"winPoints\": 10,\n    \"lossPoints\": 5,\n    \"setWinPoints\": 3,\n    \"setLossPoints\": 1\n  }\n}"
+      },
+      "folder": "game-rules"
+    },
+    {
+      "name": "Get All Users",
+      "method": "GET",
+      "url": "{{baseUrl}}/api/admin/users?isVerified=true&isAdmin=false",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "folder": "user-monitoring"
+    },
+    {
+      "name": "Get User Profile",
+      "method": "GET",
+      "url": "{{baseUrl}}/api/admin/users/:id",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "folder": "user-monitoring"
+    },
+    {
+      "name": "Get User Fantasy Teams",
+      "method": "GET",
+      "url": "{{baseUrl}}/api/admin/users/:id/fantasy-teams?competition=competition_id",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "folder": "user-monitoring"
+    },
+    {
+      "name": "Get Fantasy Team Details",
+      "method": "GET",
+      "url": "{{baseUrl}}/api/admin/users/:userId/fantasy-teams/:teamId",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "folder": "user-monitoring"
+    },
+    {
+      "name": "Reset Fantasy Team",
+      "method": "POST",
+      "url": "{{baseUrl}}/api/admin/users/:userId/fantasy-teams/:teamId/reset",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "folder": "user-monitoring"
+    },
+    {
+      "name": "Change Player in Team",
+      "method": "PUT",
+      "url": "{{baseUrl}}/api/admin/users/:userId/fantasy-teams/:teamId/change-player",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"oldPlayerId\": \"old_player_id\",\n  \"newPlayerId\": \"new_player_id\",\n  \"position\": \"starter\"\n}"
+      },
+      "folder": "user-monitoring"
+    },
+    {
+      "name": "Block User",
+      "method": "PUT",
+      "url": "{{baseUrl}}/api/admin/users/:id/block",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"isBlocked\": true\n}"
+      },
+      "folder": "user-monitoring"
+    },
+    {
+      "name": "Get Leaderboard",
+      "method": "GET",
+      "url": "{{baseUrl}}/api/admin/competitions/:competitionId/leaderboard",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "folder": "user-monitoring"
+    },
+    {
+      "name": "Get All Prices",
+      "method": "GET",
+      "url": "{{baseUrl}}/api/admin/prices?competition=competition_id",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "folder": "price-management"
+    },
+    {
+      "name": "Get Price History",
+      "method": "GET",
+      "url": "{{baseUrl}}/api/admin/prices/:playerId/history",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "folder": "price-management"
+    },
+    {
+      "name": "Update Player Price",
+      "method": "PUT",
+      "url": "{{baseUrl}}/api/admin/prices/:playerId",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"newPrice\": 150.00,\n  \"reason\": \"Manual adjustment\"\n}"
+      },
+      "folder": "price-management"
+    },
+    {
+      "name": "Recalculate Prices",
+      "method": "POST",
+      "url": "{{baseUrl}}/api/admin/prices/recalculate",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"competitionId\": \"competition_id_optional\"\n}"
+      },
+      "folder": "price-management"
+    },
+    {
+      "name": "Bulk Update Prices",
+      "method": "POST",
+      "url": "{{baseUrl}}/api/admin/prices/bulk-update",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"updates\": [\n    {\n      \"playerId\": \"player1_id\",\n      \"newPrice\": 120.00\n    },\n    {\n      \"playerId\": \"player2_id\",\n      \"newPrice\": 130.00\n    }\n  ]\n}"
+      },
+      "folder": "price-management"
+    },
+    {
+      "name": "Get All Squads",
+      "method": "GET",
+      "url": "{{baseUrl}}/api/admin/monitoring/squads?competition=competition_id&matchweek=1",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "folder": "monitoring-errors"
+    },
+    {
+      "name": "Get Player Scores",
+      "method": "GET",
+      "url": "{{baseUrl}}/api/admin/monitoring/player-scores?competition=competition_id&matchweek=1",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "folder": "monitoring-errors"
+    },
+    {
+      "name": "Detect Anomalies",
+      "method": "GET",
+      "url": "{{baseUrl}}/api/admin/monitoring/anomalies?competition=competition_id&matchweek=1",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "folder": "monitoring-errors"
+    },
+    {
+      "name": "Fix Errors",
+      "method": "POST",
+      "url": "{{baseUrl}}/api/admin/monitoring/fix-errors",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"competition\": \"competition_id_optional\",\n  \"matchweek\": 1,\n  \"fixType\": \"both\"\n}"
+      },
+      "folder": "monitoring-errors"
+    },
+    {
+      "name": "Get Dashboard",
+      "method": "GET",
+      "url": "{{baseUrl}}/api/admin/monitoring/dashboard?competition=competition_id_optional",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "folder": "monitoring-errors"
+    },
+    {
+      "name": "Get All Private Leagues",
+      "method": "GET",
+      "url": "{{baseUrl}}/api/admin/private-leagues",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "folder": "private-leagues"
+    },
+    {
+      "name": "Get Single Private League",
+      "method": "GET",
+      "url": "{{baseUrl}}/api/admin/private-leagues/:id",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "folder": "private-leagues"
+    },
+    {
+      "name": "Get League Participants",
+      "method": "GET",
+      "url": "{{baseUrl}}/api/admin/private-leagues/:id/participants",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "folder": "private-leagues"
+    },
+    {
+      "name": "Update Private League",
+      "method": "PUT",
+      "url": "{{baseUrl}}/api/admin/private-leagues/:id",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"leagueName\": \"Updated League Name\",\n  \"description\": \"Updated description\",\n  \"playerAvailability\": \"available\",\n  \"gameMode\": \"standard\"\n}"
+      },
+      "folder": "private-leagues"
+    },
+    {
+      "name": "Delete Private League",
+      "method": "DELETE",
+      "url": "{{baseUrl}}/api/admin/private-leagues/:id",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "folder": "private-leagues"
+    },
+    {
+      "name": "Remove User from League",
+      "method": "DELETE",
+      "url": "{{baseUrl}}/api/admin/private-leagues/:leagueId/users/:userId",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}"
+      },
+      "folder": "private-leagues"
+    },
+    {
+      "name": "Block User Account",
+      "method": "PUT",
+      "url": "{{baseUrl}}/api/admin/users/:userId/block-account",
+      "headers": {
+        "Authorization": "Bearer {{adminToken}}",
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"isBlocked\": true\n}"
+      },
+      "folder": "private-leagues"
+    }
+  ],
+  "environments": [
+    {
+      "name": "Development",
+      "variables": [
+        {
+          "name": "baseUrl",
+          "value": "http://localhost:5000"
+        },
+        {
+          "name": "adminToken",
+          "value": "your_admin_jwt_token_here"
+        }
+      ]
+    },
+    {
+      "name": "Production",
+      "variables": [
+        {
+          "name": "baseUrl",
+          "value": "https://your-production-url.com"
+        },
+        {
+          "name": "adminToken",
+          "value": "your_admin_jwt_token_here"
+        }
+      ]
+    }
+  ]
+}
+

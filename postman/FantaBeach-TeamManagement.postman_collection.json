@@ -1,0 +1,777 @@
+{
+  "info": {
+    "_postman_id": "a9f6f3c0-3f2a-4c39-bc9a-8d3e9d6f8a10",
+    "name": "FantaBeach - Team/Player/League/Match Management (V2)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "GET / (health)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": ["{{baseUrl}}"],
+              "path": [""]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth (Team Creator User)",
+      "item": [
+        {
+          "name": "POST /api/auth/register (team creator)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.environment.set('teamCreatorEmail', `team_creator_${Math.floor(Math.random()*1e9)}@test.com`);",
+                  "pm.environment.set('teamCreatorUsername', `teamCreator${Math.floor(Math.random()*1e6)}`);",
+                  "pm.environment.set('teamCreatorPassword', 'Pass12345!');"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "pm.environment.set('teamCreatorOtp', json.otp);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{teamCreatorUsername}}\",\n  \"email\": \"{{teamCreatorEmail}}\",\n  \"password\": \"{{teamCreatorPassword}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "POST /api/auth/verify-otp (team creator)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "pm.environment.set('teamCreatorToken', json.token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{teamCreatorEmail}}\",\n  \"otp\": \"{{teamCreatorOtp}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/verify-otp",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "verify-otp"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth (Team Creator User 2)",
+      "item": [
+        {
+          "name": "POST /api/auth/register (team creator 2)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.environment.set('teamCreator2Email', `team_creator2_${Math.floor(Math.random()*1e9)}@test.com`);",
+                  "pm.environment.set('teamCreator2Username', `teamCreator2_${Math.floor(Math.random()*1e6)}`);",
+                  "pm.environment.set('teamCreator2Password', 'Pass12345!');"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "pm.environment.set('teamCreator2Otp', json.otp);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{teamCreator2Username}}\",\n  \"email\": \"{{teamCreator2Email}}\",\n  \"password\": \"{{teamCreator2Password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "POST /api/auth/verify-otp (team creator 2)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "pm.environment.set('teamCreator2Token', json.token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"{{teamCreator2Email}}\",\n  \"otp\": \"{{teamCreator2Otp}}\"\n}" },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/verify-otp",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "verify-otp"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth (Admin)",
+      "item": [
+        {
+          "name": "POST /api/auth/login (admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "pm.environment.set('adminToken', json.token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Packs (purchase approval)",
+      "item": [
+        {
+          "name": "GET /api/credits/packages",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/credits/packages",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "credits", "packages"]
+            }
+          }
+        },
+        {
+          "name": "POST /api/credits/buy (request purchase) [team creator]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "pm.environment.set('purchaseId', json.data._id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{teamCreatorToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"package\": \"starter\",\n  \"method\": \"google\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/credits/buy",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "credits", "buy"]
+            }
+          }
+        },
+        {
+          "name": "POST /api/credits/buy (request purchase) [team creator 2]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "pm.environment.set('purchaseId2', json.data._id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{teamCreator2Token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"package\": \"starter\",\n  \"method\": \"google\"\n}" },
+            "url": {
+              "raw": "{{baseUrl}}/api/credits/buy",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "credits", "buy"]
+            }
+          }
+        },
+        {
+          "name": "GET /api/admin/purchases?status=pending",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/purchases?status=pending",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "purchases"],
+              "query": [{ "key": "status", "value": "pending" }]
+            }
+          }
+        },
+        {
+          "name": "POST /api/admin/purchases/:id/approve",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/purchases/{{purchaseId}}/approve",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "purchases", "{{purchaseId}}", "approve"]
+            }
+          }
+        }
+        ,
+        {
+          "name": "POST /api/admin/purchases/:id/approve (team creator 2)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/purchases/{{purchaseId2}}/approve",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "purchases", "{{purchaseId2}}", "approve"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Team (one per user, requires approved pack)",
+      "item": [
+        {
+          "name": "POST /api/teams (create my team)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "pm.environment.set('teamId', json.data._id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{teamCreatorToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"teamName\": \"My Team\",\n  \"teamCountry\": \"IT\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/teams",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "teams"]
+            }
+          }
+        },
+        {
+          "name": "POST /api/teams (create team creator 2 team)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "pm.environment.set('teamId2', json.data._id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{teamCreator2Token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"teamName\": \"My Team 2\",\n  \"teamCountry\": \"IT\"\n}" },
+            "url": {
+              "raw": "{{baseUrl}}/api/teams",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "teams"]
+            }
+          }
+        },
+        {
+          "name": "GET /api/teams/me",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{teamCreatorToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/teams/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "teams", "me"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Player (from user) + Admin assign to team",
+      "item": [
+        {
+          "name": "POST /api/auth/register (player user)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.environment.set('playerEmail', `player_${Math.floor(Math.random()*1e9)}@test.com`);",
+                  "pm.environment.set('playerUsername', `player${Math.floor(Math.random()*1e6)}`);",
+                  "pm.environment.set('playerPassword', 'Pass12345!');"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "pm.environment.set('playerOtp', json.otp);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{playerUsername}}\",\n  \"email\": \"{{playerEmail}}\",\n  \"password\": \"{{playerPassword}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "POST /api/auth/verify-otp (player user)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "pm.environment.set('playerToken', json.token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"{{playerEmail}}\",\n  \"otp\": \"{{playerOtp}}\"\n}" },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/verify-otp",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "verify-otp"]
+            }
+          }
+        },
+        {
+          "name": "POST /api/player-profiles/upgrade (player)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "pm.environment.set('playerProfileId', json.data._id);",
+                  "const existing = pm.environment.get('playerProfileIdsCsv') || '';",
+                  "const next = existing ? `${existing},${json.data._id}` : `${json.data._id}`;",
+                  "pm.environment.set('playerProfileIdsCsv', next);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{playerToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"playerName\": \"Player One\",\n  \"country\": \"IT\"\n}" },
+            "url": {
+              "raw": "{{baseUrl}}/api/player-profiles/upgrade",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "player-profiles", "upgrade"]
+            }
+          }
+        },
+        {
+          "name": "POST /api/admin/teams-v2/:teamId/assign-player",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"playerProfileId\": \"{{playerProfileId}}\",\n  \"status\": \"reserve\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/teams-v2/{{teamId}}/assign-player",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "teams-v2", "{{teamId}}", "assign-player"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Lineup (Team Creator) - run after assigning 4 players",
+      "item": [
+        {
+          "name": "PATCH /api/teams/me/lineup (team creator) [uses playerProfileIdsCsv first 4]",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const csv = pm.environment.get('playerProfileIdsCsv') || '';",
+                  "const arr = csv.split(',').map(s=>s.trim()).filter(Boolean).slice(0,4);",
+                  "pm.environment.set('activeIdsJson', JSON.stringify(arr));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{teamCreatorToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"activePlayerProfileIds\": {{activeIdsJson}}\n}" },
+            "url": {
+              "raw": "{{baseUrl}}/api/teams/me/lineup",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "teams", "me", "lineup"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "League (Admin create + Team join request + Approve)",
+      "item": [
+        {
+          "name": "POST /api/admin/managed-leagues (create league)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const now = new Date();",
+                  "const start = new Date(now.getTime() + 24*60*60*1000);",
+                  "const end = new Date(now.getTime() + 30*24*60*60*1000);",
+                  "pm.environment.set('leagueStart', start.toISOString());",
+                  "pm.environment.set('leagueEnd', end.toISOString());"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "pm.environment.set('leagueId', json.data._id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"leagueName\": \"League One\",\n  \"country\": \"IT\",\n  \"startDate\": \"{{leagueStart}}\",\n  \"endDate\": \"{{leagueEnd}}\",\n  \"rules\": \"\",\n  \"limits\": \"\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/managed-leagues",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "managed-leagues"]
+            }
+          }
+        },
+        {
+          "name": "POST /api/managed-leagues/:id/request-join",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "pm.environment.set('joinRequestId', json.data._id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{teamCreatorToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": {
+              "raw": "{{baseUrl}}/api/managed-leagues/{{leagueId}}/request-join",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "managed-leagues", "{{leagueId}}", "request-join"]
+            }
+          }
+        },
+        {
+          "name": "POST /api/managed-leagues/:id/request-join (team creator 2)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "pm.environment.set('joinRequestId2', json.data._id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{teamCreator2Token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": {
+              "raw": "{{baseUrl}}/api/managed-leagues/{{leagueId}}/request-join",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "managed-leagues", "{{leagueId}}", "request-join"]
+            }
+          }
+        },
+        {
+          "name": "POST /api/admin/league-join-requests/:id/approve",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/league-join-requests/{{joinRequestId}}/approve",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "league-join-requests", "{{joinRequestId}}", "approve"]
+            }
+          }
+        }
+        ,
+        {
+          "name": "POST /api/admin/league-join-requests/:id/approve (team creator 2)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/league-join-requests/{{joinRequestId2}}/approve",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "league-join-requests", "{{joinRequestId2}}", "approve"]
+            }
+          }
+        }
+      ]
+    }
+    ,
+    {
+      "name": "Match (Admin schedule + Team lineup)",
+      "item": [
+        {
+          "name": "POST /api/admin/league-matches (create match)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const now = new Date();",
+                  "const sched = new Date(now.getTime() + 2*24*60*60*1000);",
+                  "pm.environment.set('matchScheduledAt', sched.toISOString());"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "pm.environment.set('matchId', json.data._id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"leagueId\": \"{{leagueId}}\",\n  \"teamAId\": \"{{teamId}}\",\n  \"teamBId\": \"{{teamId2}}\",\n  \"scheduledAt\": \"{{matchScheduledAt}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/league-matches",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "league-matches"]
+            }
+          }
+        },
+        {
+          "name": "PATCH /api/league-matches/:id/lineup (team creator) [uses playerProfileIdsCsv first 4]",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const csv = pm.environment.get('playerProfileIdsCsv') || '';",
+                  "const arr = csv.split(',').map(s=>s.trim()).filter(Boolean).slice(0,4);",
+                  "pm.environment.set('matchLineupJson', JSON.stringify(arr));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{teamCreatorToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"playerProfileIds\": {{matchLineupJson}}\n}" },
+            "url": {
+              "raw": "{{baseUrl}}/api/league-matches/{{matchId}}/lineup",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "league-matches", "{{matchId}}", "lineup"]
+            }
+          }
+        },
+        {
+          "name": "POST /api/admin/league-matches/:id/lock",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/league-matches/{{matchId}}/lock",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "league-matches", "{{matchId}}", "lock"]
+            }
+          }
+        },
+        {
+          "name": "PUT /api/admin/league-matches/:id/result",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"score\": \"2-0\",\n  \"winnerTeamId\": \"{{teamId}}\",\n  \"isCompleted\": true\n}" },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/league-matches/{{matchId}}/result",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "league-matches", "{{matchId}}", "result"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+
+
