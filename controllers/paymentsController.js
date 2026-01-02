@@ -2,7 +2,19 @@
 const Stripe = require('stripe');
 const PackPurchase = require('../models/PackPurchase');
 const { PACKAGES } = require('../config/packages');
-const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+
+// Lazy initialize Stripe to handle missing env vars gracefully
+let stripe = null;
+function getStripe() {
+  if (!stripe) {
+    const secretKey = process.env.STRIPE_SECRET_KEY;
+    if (!secretKey) {
+      throw new Error('STRIPE_SECRET_KEY is not configured');
+    }
+    stripe = Stripe(secretKey);
+  }
+  return stripe;
+}
 
 // Create PaymentIntent
 exports.createPaymentIntent = async (req, res) => {
@@ -16,7 +28,8 @@ exports.createPaymentIntent = async (req, res) => {
 
     const pkg = PACKAGES[pkgKey];
 
-    const paymentIntent = await stripe.paymentIntents.create({
+    const stripeInstance = getStripe();
+    const paymentIntent = await stripeInstance.paymentIntents.create({
       amount: Math.round(pkg.price * 100),
       currency: 'usd',
       metadata: {
@@ -45,7 +58,8 @@ exports.handleWebhook = async (req, res) => {
   let event;
 
   try {
-    event = stripe.webhooks.constructEvent(
+    const stripeInstance = getStripe();
+    event = stripeInstance.webhooks.constructEvent(
       req.rawBody, // IMPORTANT!
       sig,
       process.env.STRIPE_WEBHOOK_SECRET

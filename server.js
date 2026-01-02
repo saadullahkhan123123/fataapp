@@ -107,7 +107,15 @@ app.use((err, req, res, next) => {
   });
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running in ${process.env.NODE_ENV || 'production'} on port ${PORT}`);
-});
+// Export app for Vercel serverless
+// For Vercel, export the app directly - @vercel/node will wrap it as a handler
+module.exports = app;
+
+// Only listen when not in serverless environment (local development)
+// Vercel sets VERCEL env variable, and AWS Lambda sets LAMBDA_TASK_ROOT
+if (!process.env.VERCEL && !process.env.LAMBDA_TASK_ROOT) {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`Server running in ${process.env.NODE_ENV || 'production'} on port ${PORT}`);
+  });
+}
