@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const morgan = require('morgan');
 const path = require('path');
+const mongoose = require('mongoose');
 const connectDB = require('./config/db');
 
 
@@ -14,8 +15,11 @@ const app = express();
 // Load env
 dotenv.config();
 
-// Connect DB
-connectDB();
+// Connect DB (async - will be awaited in request handlers if needed)
+// For serverless, connection will be established on first request
+connectDB().catch(err => {
+  console.error('Initial DB connection failed (will retry on first request):', err.message);
+});
 
 
 // Middleware - CORS configuration for admin panel
@@ -62,6 +66,41 @@ app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
+
+// Middleware to ensure DB connection before handling requests
+app.use(async (req, res, next) => {
+  // Skip health check endpoint
+  if (req.path === '/' || req.path === '/api') {
+    return next();
+  }
+  
+  // Ensure MongoDB is connected
+  try {
+    if (mongoose.connection.readyState !== 1) {
+      console.log('DB not connected, attempting connection...');
+      await connectDB();
+      // Wait a bit to ensure connection is fully established
+      let retries = 0;
+      while (mongoose.connection.readyState !== 1 && retries < 10) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+        retries++;
+      }
+      
+      if (mongoose.connection.readyState !== 1) {
+        throw new Error('MongoDB connection failed to establish');
+      }
+      console.log('DB connection established in middleware');
+    }
+    next();
+  } catch (error) {
+    console.error('DB connection failed in middleware:', error.message);
+    return res.status(503).json({
+      success: false,
+      message: 'Database connection failed. Please try again.',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
 
 // Routes
 const leagueRoutes = require("./routes/leagueRoutes");
