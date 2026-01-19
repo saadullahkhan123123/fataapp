@@ -253,6 +253,93 @@ exports.googleSignIn = async (req, res, next) => {
 };
 
 // ============================
+// CHECK USER STATUS (First Time User Detection)
+// ============================
+exports.checkUserStatus = async (req, res, next) => {
+  try {
+    const userId = req.user?._id || req.user?.id;
+    
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: 'User not authenticated',
+        isFirstTime: true,
+        needsOnboarding: true
+      });
+    }
+
+    const user = await User.findById(userId);
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+        isFirstTime: true,
+        needsOnboarding: true
+      });
+    }
+
+    // Check if user needs onboarding
+    const needsOnboarding = !user.onboardingCompleted;
+    const isFirstTime = !user.onboardingCompleted;
+
+    res.status(200).json({
+      success: true,
+      isFirstTime,
+      needsOnboarding,
+      onboardingCompleted: user.onboardingCompleted,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        name: user.name,
+        profilePicture: user.profilePicture,
+        isVerified: user.isVerified
+      }
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// ============================
+// COMPLETE ONBOARDING
+// ============================
+exports.completeOnboarding = async (req, res, next) => {
+  try {
+    const userId = req.user?._id || req.user?.id;
+    
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: 'User not authenticated'
+      });
+    }
+
+    const user = await User.findById(userId);
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Mark onboarding as completed
+    user.onboardingCompleted = true;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Onboarding completed successfully',
+      user: user.toJSON()
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// ============================
 // LOGOUT USER
 // ============================
 exports.logoutUser = async (req, res, next) => {
