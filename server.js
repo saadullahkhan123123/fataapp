@@ -69,8 +69,8 @@ if (process.env.NODE_ENV === 'development') {
 
 // Middleware to ensure DB connection before handling requests
 app.use(async (req, res, next) => {
-  // Skip health check endpoint
-  if (req.path === '/' || req.path === '/api') {
+  // Skip health check and diagnostic endpoints
+  if (req.path === '/' || req.path === '/api' || req.path === '/api/health' || req.path === '/api/db-check') {
     return next();
   }
   
@@ -78,26 +78,32 @@ app.use(async (req, res, next) => {
   try {
     if (mongoose.connection.readyState !== 1) {
       console.log('DB not connected, attempting connection...');
+      console.log('MONGO_URI exists:', !!process.env.MONGO_URI);
       await connectDB();
       // Wait a bit to ensure connection is fully established
       let retries = 0;
-      while (mongoose.connection.readyState !== 1 && retries < 10) {
-        await new Promise(resolve => setTimeout(resolve, 100));
+      while (mongoose.connection.readyState !== 1 && retries < 50) {
+        await new Promise(resolve => setTimeout(resolve, 200));
         retries++;
       }
       
       if (mongoose.connection.readyState !== 1) {
-        throw new Error('MongoDB connection failed to establish');
+        const errorMsg = process.env.MONGO_URI 
+          ? 'MongoDB connection failed to establish. Check connection string and network access.'
+          : 'MONGO_URI environment variable is not set. Please configure it in Vercel.';
+        throw new Error(errorMsg);
       }
       console.log('DB connection established in middleware');
     }
     next();
   } catch (error) {
     console.error('DB connection failed in middleware:', error.message);
+    console.error('Full error:', error);
     return res.status(503).json({
       success: false,
       message: 'Database connection failed. Please try again.',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      error: error.message,
+      hint: !process.env.MONGO_URI ? 'MONGO_URI environment variable is not set in Vercel.' : 'Check MongoDB connection string and network access.'
     });
   }
 });
@@ -135,6 +141,60 @@ app.use('/api/admin', adminRoutes);
 // Health check
 app.get('/', (req, res) => {
   res.json({ success: true, message: 'FantaBeach API is running' });
+});
+
+// Database connection check endpoint
+app.get('/api/db-check', async (req, res) => {
+  try {
+    const hasMongoUri = !!process.env.MONGO_URI;
+    const connectionState = mongoose.connection.readyState;
+    const stateNames = {
+      0: 'disconnected',
+      1: 'connected',
+      2: 'connecting',
+      3: 'disconnecting'
+    };
+    
+    if (!hasMongoUri) {
+      return res.status(500).json({
+        success: false,
+        message: 'MONGO_URI environment variable is not set',
+        connectionState: stateNames[connectionState] || 'unknown',
+        fix: 'Add MONGO_URI in Vercel Dashboard → Settings → Environment Variables'
+      });
+    }
+    
+    if (connectionState !== 1) {
+      // Try to connect
+      try {
+        await connectDB();
+        // Wait a moment
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      } catch (error) {
+        return res.status(500).json({
+          success: false,
+          message: 'Database connection failed',
+          connectionState: stateNames[connectionState] || 'unknown',
+          error: error.message,
+          mongoUriSet: hasMongoUri,
+          fix: 'Check MongoDB connection string and network access in MongoDB Atlas'
+        });
+      }
+    }
+    
+    res.json({
+      success: true,
+      message: 'Database connection is healthy',
+      connectionState: stateNames[mongoose.connection.readyState] || 'unknown',
+      mongoUriSet: hasMongoUri
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Database check failed',
+      error: error.message
+    });
+  }
 });
 
 // Global error handler (simple)
