@@ -2,6 +2,7 @@
 // This file handles all requests starting with /api/*
 const app = require('../server');
 
-// Export the app - Vercel will wrap it as a serverless function handler
+// Export the app as a handler for Vercel
+// Vercel will automatically wrap Express apps
 module.exports = app;
 

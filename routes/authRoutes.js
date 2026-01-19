@@ -13,6 +13,9 @@ router.post('/login', authController.loginUser);
 // Verify OTP
 router.post('/verify-otp', authController.verifyLoginOrRegisterOtp);
 
+// Google Sign-In
+router.post('/google', authController.googleSignIn);
+
 // Logout user (requires authentication)
 router.post('/logout', authMiddleware, authController.logoutUser);
 

@@ -9,7 +9,7 @@
 2. Select environment **"FantaBeach (Local/Prod)"**.
 3. Set `baseUrl`:
    - Local: `http://localhost:5000`
-   - Production: `https://fantabeach-backend-code.vercel.app`
+   - Production: `https://fataapp-delta.vercel.app`
 
 ### Admin credentials note (dotenv)
 If your `.env` has `ADMIN_PASSWORD=admin123!@#` **without quotes**, dotenv will treat `#` as a comment and the real password becomes `admin123!@`.

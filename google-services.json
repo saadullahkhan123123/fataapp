@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1011142073370",
+    "project_id": "loignfatabeach",
+    "storage_bucket": "loignfatabeach.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1011142073370:android:7f2c05fcb074cc34f1c5a3",
+        "android_client_info": {
+          "package_name": "com.example.myapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIccclSe47Z71Sf0dEnrphzYW6hscJgYA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

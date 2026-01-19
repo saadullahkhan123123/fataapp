@@ -1,83 +1,150 @@
-# Vercel Serverless Function Fix
+# Vercel Deployment Fix - NOT_FOUND Error
 
-## Issues Fixed
+## Problem
+Getting `NOT_FOUND` error when accessing API endpoints on Vercel:
+- Error: `The page could not be found NOT_FOUND`
+- URL: `https://fataapp-delta.vercel.app/api/auth/login`
 
-### 1. Server Export for Serverless ✅
-**Problem**: `server.js` was calling `app.listen()` which doesn't work in serverless environments.
+## Solution
 
-**Fix**: 
-- Added conditional `app.listen()` that only runs in non-serverless environments
-- Export the app for Vercel: `module.exports = app;`
-- Created `api/index.js` as the Vercel serverless function entry point
+### 1. Vercel Configuration File
 
-### 2. Stripe Initialization ✅
-**Problem**: Stripe was initialized at module level with `process.env.STRIPE_SECRET_KEY`, causing crashes if env var is missing.
+A `vercel.json` file has been created in the `fantabeach` directory. This file tells Vercel how to route requests to your serverless function.
 
-**Fix**:
-- Changed to lazy initialization with `getStripe()` function
-- Stripe is only initialized when actually needed (in request handlers)
-- Proper error handling if `STRIPE_SECRET_KEY` is not configured
+### 2. Verify Vercel Project Settings
 
-### 3. Database Connection ✅
-**Problem**: DB connection was calling `process.exit(1)` on error, which crashes serverless functions.
+Make sure your Vercel project is configured correctly:
 
-**Fix**:
-- Added check to skip connection if already connected (for serverless cold starts)
-- Removed `process.exit(1)` in serverless mode (Vercel sets `VERCEL` env variable)
-- Allows serverless functions to retry on next request instead of crashing
+1. **Root Directory**: Should be `fantabeach` (not the parent directory)
+2. **Framework Preset**: `Other` or `Node.js`
+3. **Build Command**: Leave empty or `npm install`
+4. **Output Directory**: Leave empty
+5. **Install Command**: `npm install`
+6. **Development Command**: Leave empty
 
-## Files Changed
+### 3. Check API Folder Structure
 
-1. **`server.js`**
-   - Export app for serverless: `module.exports = app;`
-   - Conditional `app.listen()` only for local development
-
-2. **`controllers/paymentsController.js`**
-   - Lazy Stripe initialization with `getStripe()` function
-   - Updated all Stripe API calls to use `getStripe()`
-
-3. **`config/db.js`**
-   - Skip connection if already connected
-   - Don't exit process in serverless mode
-
-4. **`api/index.js`** (NEW)
-   - Vercel serverless function entry point
-   - Requires and exports the Express app from `server.js`
-
-## How Vercel Routes Work
-
-- Vercel automatically routes `/api/*` requests to `api/index.js`
-- Our Express routes already have `/api` prefix (e.g., `/api/auth/login`)
-- So a request to `https://your-domain.vercel.app/api/auth/login` is handled by `api/index.js`
-- Which then routes internally to the Express route `/api/auth/login`
-
-## Environment Variables Required
-
-Make sure these are set in Vercel Environment Variables:
-
-- `MONGO_URI` - MongoDB connection string
-- `JWT_SECRET` - JWT signing secret
-- `STRIPE_SECRET_KEY` - Stripe secret key (if using payments)
-- `STRIPE_PUBLISHABLE_KEY` - Stripe publishable key (if using payments)
-- `STRIPE_WEBHOOK_SECRET` - Stripe webhook secret (if using webhooks)
-- `EMAIL_USER` - Email account (if using email)
-- `EMAIL_PASS` - Email password (if using email)
-- `NODE_ENV` - Set to `production` (optional, defaults to production on Vercel)
-
-## Testing
-
-After deploying to Vercel:
-
-1. Check the deployment logs for any errors
-2. Test the health endpoint: `GET https://your-domain.vercel.app/`
-3. Test an API endpoint: `GET https://your-domain.vercel.app/api/auth/login` (should return 400/401, not crash)
-
-## Local Development
-
-Local development still works the same way:
-```bash
-npm run dev
+Your project should have:
+```
+fantabeach/
+  ├── api/
+  │   └── index.js          ← Serverless function entry point
+  ├── vercel.json           ← Vercel configuration (NEW)
+  ├── server.js             ← Express app
+  └── package.json
 ```
 
-The server will listen on port 5000 as before, because `VERCEL` env variable is not set.
+### 4. Redeploy on Vercel
+
+After adding `vercel.json`:
+
+1. **Option A: Automatic (if connected to Git)**
+   - Commit and push the `vercel.json` file
+   - Vercel will automatically redeploy
+
+2. **Option B: Manual**
+   - Go to Vercel Dashboard
+   - Click on your project
+   - Go to **Deployments** tab
+   - Click **Redeploy** on the latest deployment
+   - Or trigger a new deployment
+
+### 5. Test the API
+
+After redeployment, test:
+
+**Health Check:**
+```
+GET https://fataapp-delta.vercel.app/
+```
+Expected: `{"success":true,"message":"FantaBeach API is running"}`
+
+**Login Endpoint:**
+```
+POST https://fataapp-delta.vercel.app/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "muhammadsaadullah093@gmail.com",
+  "password": "admin123!@"
+}
+```
+
+### 6. Environment Variables
+
+Make sure these are set in Vercel Dashboard → Settings → Environment Variables:
+
+- `MONGO_URI` - MongoDB connection string
+- `JWT_SECRET` - JWT secret key
+- `JWT_EXPIRES_IN` - (optional) Token expiration (default: 7d)
+- `NODE_ENV` - Set to `production`
+
+### 7. Common Issues
+
+#### Issue: Still getting NOT_FOUND
+- **Check**: Root directory in Vercel settings should be `fantabeach`
+- **Check**: `vercel.json` is in the `fantabeach` folder (not parent)
+- **Check**: `api/index.js` exists and exports the app correctly
+
+#### Issue: Function timeout
+- **Check**: MongoDB connection string is correct
+- **Check**: Environment variables are set correctly
+- **Check**: Database is accessible from Vercel's IPs
+
+#### Issue: CORS errors
+- Already configured in `server.js` to allow all origins in production
+- Should work automatically
+
+### 8. Alternative: Use Vercel CLI
+
+If you want to test locally with Vercel:
+
+```bash
+cd fantabeach
+npm install -g vercel
+vercel dev
+```
+
+This will run your app locally with Vercel's serverless environment.
+
+### 9. Verify Deployment
+
+After redeployment, check:
+
+1. **Vercel Dashboard** → **Deployments** → Latest deployment
+2. **Functions** tab should show `api/index.js`
+3. **Logs** tab for any errors
+
+### 10. Testing Checklist
+
+- [ ] `vercel.json` file exists in `fantabeach` directory
+- [ ] `api/index.js` exists and exports the app
+- [ ] Root directory in Vercel is set to `fantabeach`
+- [ ] Environment variables are set in Vercel
+- [ ] Project has been redeployed after adding `vercel.json`
+- [ ] Health check endpoint works: `GET /`
+- [ ] Login endpoint works: `POST /api/auth/login`
+
+## File Structure
+
+```
+fantabeach/
+├── api/
+│   └── index.js              # Serverless function entry
+├── vercel.json               # Vercel configuration (NEW)
+├── server.js                 # Express app
+├── routes/
+│   └── authRoutes.js         # Auth routes
+├── controllers/
+│   └── authController.js    # Auth controller
+└── package.json
+```
+
+## Next Steps
+
+1. Commit `vercel.json` to your repository
+2. Push to trigger automatic deployment
+3. Wait for deployment to complete
+4. Test the API endpoints
+5. If still not working, check Vercel deployment logs
 

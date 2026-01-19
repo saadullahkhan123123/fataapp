@@ -25,7 +25,8 @@ const allowedOrigins = [
   'http://localhost:5174',
   'http://127.0.0.1:5173',
   'https://admin-panal-fatabeach.vercel.app',
-  'https://admin-panal-fatabeach.vercel.app/'
+  'https://admin-panal-fatabeach.vercel.app/',
+  'https://fataapp-delta.vercel.app'
 ];
 
 app.use(cors({
